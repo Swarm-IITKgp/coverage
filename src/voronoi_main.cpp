@@ -30,8 +30,8 @@ void createEnv(const swarm_simulator::obstacleList msg){
 	Mat img(480, 480, CV_8U, Scalar(255));
 	for(int i = 0; i <msg.obstacles.size(); ++i){
 		if(msg.obstacles[i].radius>1.9){
-		int x = (int)(((msg.obstacles[i].x)+12.0)*20.0);
-		int y = (int)(((msg.obstacles[i].y)+12.0)*20.0);
+		int x = (int)(((msg.obstacles[i].x)+10.0)*20.0);
+		int y = (int)(((msg.obstacles[i].y)+10.0)*20.0);
 		circle(img, Point(x, y), (int)((msg.obstacles[i].radius)*10), Scalar(0), -1);
 		}
 	}
@@ -46,8 +46,8 @@ void createEnv(const swarm_simulator::obstacleList msg){
 	{
 		for(vector<Point>::iterator it2=bestpatrol[i].begin();it2!=bestpatrol[i].end();it2++)
 		{
-			publish_point.x=(double)((*it2).x)/20.0-12.0;
-			publish_point.y=(double)((*it2).y)/20.0-12.0;
+			publish_point.x=(double)((*it2).x)/20.0-10.0;
+			publish_point.y=(double)((*it2).y)/20.0-10.0;
 			publish_path[i].parray.push_back(publish_point);
 		}
 	}
