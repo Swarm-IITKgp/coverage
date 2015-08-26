@@ -88,27 +88,33 @@ void Coverage::GetCentroids(Mat& img,vector<Point>& sites, vector<Point>& centro
 
 	//To remove adding duplicates to BFS queue
 	vector< vector<bool> > visited(r,vector<bool>(c,false));
+	//cout<<"y1"<<endl;
 
 	for(i=0;i<n_agents;i++){
 
 		//Begin BFS for centroids
 		queue<Point> frontier;
 		frontier.push(sites[i]);
-
 		visited[sites[i].y][sites[i].x] = true;
 		double avgx=0,avgy=0;
+		double wt;//Weight of each point
 		int n_pix=0;
+		double totwt=0.0;
 
 		while(!frontier.empty()){
 			Point top = frontier.front();
 			frontier.pop();
 			n_pix++;
-			avgx += top.x;
-			avgy += top.y;
+			wt=distribution[top.x][top.y];
+			totwt+=wt;
+			//wt=1;
+			avgx += top.x*wt;
+			avgy += top.y*wt;
 
 			for(k=top.y-1;k<=top.y+1;k++){
 				for(l=top.x-1;l<=top.x+1;l++){
 					if(IsValidPoint(l,k,r,c)==false||img.at<uchar>(k,l)==0||visited[k][l]==true)
+					//if(IsValidPoint(l,k,r,c)==false||visited[k][l]==true)
 						continue;
 					Point nbr(l,k);
 					visited[k][l] = true;
@@ -118,11 +124,10 @@ void Coverage::GetCentroids(Mat& img,vector<Point>& sites, vector<Point>& centro
 		}
 
 		//Get avg values and centroid
-
-		avgx/=n_pix;
-		avgy/=n_pix;
-
-		
+		//avgx/=n_pix;
+		//avgy/=n_pix;
+		avgx/=totwt;
+		avgy/=totwt;
 		Point centroid(avgx,avgy);
 		centroids[i] = centroid;
 
@@ -174,15 +179,19 @@ void Coverage::GetBestPositions(vector<Point>& positions)
 	while(sumdist > 4*n_agents) //Threshold for convergence
 	{
 		work_copy = map.clone();
+		//cout<<"Her0"<<endl;
 
 		for(i=0;i<n_agents;i++){
 			xValues[i] = temp_sites[i].x;
 			yValues[i] = temp_sites[i].y;
 		}
+		//cout<<"Her1"<<endl;
 
 		//Get Voronoi Diagram from object
 		vdg.generateVoronoi(xValues,yValues,n_agents,0,map.cols-1,0,map.rows-1,3);
+		//cout<<"Her2"<<endl;
 		vdg.resetIterator();
+		//cout<<"Her3"<<endl;
 
 		float x1,x2,y1,y2; //To get co-ords of returned lines
 
@@ -190,8 +199,10 @@ void Coverage::GetBestPositions(vector<Point>& positions)
 			//Extract truncated lines one by one 
 			line(work_copy,Point(x1,y1),Point(x2,y2),Scalar(0),2);
 		}
+		//cout<<"Her4"<<endl;
 
 		GetCentroids(work_copy,temp_sites,temp_centres);
+		//cout<<"Her5"<<endl;
 
 		sumdist = 0.0;
 		//Set sites to centroids
@@ -199,6 +210,7 @@ void Coverage::GetBestPositions(vector<Point>& positions)
 			sumdist+= EuclideanDist(temp_sites[i],temp_centres[i]);
 			temp_sites[i] = temp_centres[i];
 		}
+		//cout<<sumdist<<endl;
 	}
 
 	//Shift blocked centres to nearest free point

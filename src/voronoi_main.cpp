@@ -28,6 +28,23 @@ int n_agents;
 void createEnv(const swarm_simulator::obstacleList msg){
 	ros::Rate loop_rate(5);
 	Mat img(480, 480, CV_8U, Scalar(255));
+	//Mat distribution(480,480, CV_64F, Scalar(1));
+	vector<vector<double> > distribution(480,vector<double>(480));
+	
+//some randomass distribution
+	for(int i=0;i<480;i++)
+	{
+		
+		for(int j=0;j<480;j++)
+		{
+			if(img.at<uchar>(i,j)==0)
+				distribution[i][j]=0;
+			else
+				distribution[i][j]=(288800.0-((i-100)*(i-100)+(j-100)*(j-100)))/288800.0;
+				//distribution[i][j]=1;
+		}
+	}
+			
 	for(int i = 0; i <msg.obstacles.size(); ++i){
 		if(msg.obstacles[i].radius>1.9){
 		int x = (int)(((msg.obstacles[i].x)+10.0)*20.0);
@@ -35,7 +52,7 @@ void createEnv(const swarm_simulator::obstacleList msg){
 		circle(img, Point(x, y), (int)((msg.obstacles[i].radius)*10), Scalar(0), -1);
 		}
 	}
-	Coverage obj(img,n_agents);
+	Coverage obj(img,n_agents,distribution);
 	vector<Point> locations;
 	obj.GetBestPositions(locations);
 	Patrolling pat_obj(img,n_agents,radius,locations);
