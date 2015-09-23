@@ -105,7 +105,7 @@ void Coverage::GetCentroids(Mat& img,vector<Point>& sites, vector<Point>& centro
 			Point top = frontier.front();
 			frontier.pop();
 			n_pix++;
-			wt=distribution[top.x][top.y];
+			wt=distribution.at<double>(top.x,top.y);
 			totwt+=wt;
 			//wt=1;
 			avgx += top.x*wt;

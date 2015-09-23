@@ -31,7 +31,7 @@ class Coverage
 {
 public:
 	Coverage();
-	Coverage(Mat& img, int n, vector<vector<double> > dist):map(img), n_agents(n),distribution(dist){};
+	Coverage(Mat& img, int n, vector<vector<double>> dist):map(img), n_agents(n),distribution(dist){};
 	~Coverage();
 
 	void GetBestPositions(vector<Point>& positions);
