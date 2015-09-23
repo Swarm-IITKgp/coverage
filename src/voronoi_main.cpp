@@ -31,7 +31,8 @@ void createEnv(const swarm_simulator::obstacleList msg){
 	//Mat distribution(480,480, CV_64F, Scalar(1));
 	vector<vector<double> > distribution(480,vector<double>(480));
 	
-//some randomass distribution
+//some random distribution
+	//CHANGE THIS PART FOR DIFFERENT DISTRIBUTIONS
 	for(int i=0;i<480;i++)
 	{
 		
